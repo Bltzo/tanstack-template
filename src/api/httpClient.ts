@@ -2,8 +2,8 @@ import { toast } from "sonner";
 
 import { env } from "~/env";
 import * as m from "~/i18n/messages";
+import { getUserSession } from "~/server/auth";
 import { HttpError } from "~/utils/error";
-import { getAccessTokenFromSession } from "~/utils/session";
 
 export interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
@@ -41,7 +41,7 @@ async function request<T>(
     url.searchParams.set(key, value);
   }
 
-  const accessToken = await getAccessTokenFromSession();
+  const session = await getUserSession();
 
   // Headers, not an object literal: RequestOptions["headers"] is HeadersInit,
   // which may be an array of tuples and cannot be safely spread.
@@ -49,8 +49,8 @@ async function request<T>(
   if (!requestHeaders.has("Content-Type")) {
     requestHeaders.set("Content-Type", "application/json");
   }
-  if (accessToken) {
-    requestHeaders.set("Authorization", `Bearer ${accessToken}`);
+  if (session.accessToken) {
+    requestHeaders.set("Authorization", `Bearer ${session.accessToken}`);
   }
 
   const response = await fetch(url, {

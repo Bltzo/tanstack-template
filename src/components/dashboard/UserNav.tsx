@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { Bell } from "lucide-react";
 import { useCallback } from "react";
@@ -21,15 +20,11 @@ import { logout } from "~/server/auth";
 export function UserNav() {
   const { data } = useUserProfile();
   const router = useRouter();
-  const queryClient = useQueryClient();
   const handleLogout = useCallback(async () => {
     await logout();
-    // The cache outlives the session cookie: without this the signed-out tab
-    // still holds the profile and every other authed query.
-    queryClient.clear();
     await router.invalidate();
-    await router.navigate({ to: "/sign-in" });
-  }, [router, queryClient]);
+    await router.navigate({ to: "/" });
+  }, [router]);
 
   return (
     <div className="flex items-center gap-4">

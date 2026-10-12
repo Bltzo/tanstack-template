@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback } from "react";
@@ -28,7 +28,6 @@ const PHONE_CODES = ["+1", "+20", "+44", "+91"];
 
 export function SignUpForm() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const { mutateAsync } = useMutation({
     mutationFn: useServerFn(register),
     mutationKey: ["user/register"],
@@ -36,8 +35,6 @@ export function SignUpForm() {
       toast(m.authSignUpSuccessTitle(), {
         description: m.authSignUpSuccessMessage(),
       });
-      // Identity changed: drop anything the previous session left behind.
-      queryClient.clear();
       await router.invalidate();
       await router.navigate({ to: "/dashboard" });
     },

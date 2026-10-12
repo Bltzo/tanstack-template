@@ -14,12 +14,6 @@ export interface AppSession {
   accessToken: string;
 }
 
-// The client-safe projection of AppSession. Anything placed in router context
-// ends up in the SSR payload, so only this shape may cross that boundary.
-export interface AuthState {
-  isAuthenticated: boolean;
-}
-
 export function useAppSession() {
   return useSession<AppSession>({
     password: env.SESSION_SECRET,
